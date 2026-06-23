@@ -5,15 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "dotenv -e ../../.env -- prisma generate && tsc -p tsconfig.json",
+    "build": "node ./scripts/run-with-root-env.mjs prisma generate && tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "lint": "eslint \"src/**/*.ts\"",
-    "test": "dotenv -e ../../.env -- prisma generate && vitest run",
-    "test:coverage": "dotenv -e ../../.env -- prisma generate && vitest run --coverage",
-    "prisma:generate": "dotenv -e ../../.env -- prisma generate",
-    "prisma:migrate": "dotenv -e ../../.env -- prisma migrate dev",
-    "prisma:deploy": "dotenv -e ../../.env -- prisma migrate deploy",
-    "prisma:studio": "dotenv -e ../../.env -- prisma studio"
+    "test": "node ./scripts/run-with-root-env.mjs prisma generate && vitest run",
+    "test:coverage": "node ./scripts/run-with-root-env.mjs prisma generate && vitest run --coverage",
+    "prisma:generate": "node ./scripts/run-with-root-env.mjs prisma generate",
+    "prisma:migrate": "node ./scripts/run-with-root-env.mjs prisma migrate dev",
+    "prisma:deploy": "node ./scripts/run-with-root-env.mjs prisma migrate deploy",
+    "prisma:studio": "node ./scripts/run-with-root-env.mjs prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
