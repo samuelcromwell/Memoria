@@ -5,6 +5,38 @@ import type { DashboardStats } from "@/types/api";
 
 const colors = ["#2D7FF9", "#12805C", "#9F640A", "#7C3AED", "#DB2777", "#475467"];
 
+const fileTypeLabels: Record<string, string> = {
+  "application/pdf": "pdf",
+  "application/zip": "zip",
+  "application/json": "json",
+  "application/msword": "doc",
+  "application/vnd.ms-excel": "xls",
+  "application/vnd.ms-powerpoint": "ppt",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+  "image/gif": "gif",
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "text/csv": "csv",
+  "text/plain": "txt"
+};
+
+function formatFileTypeLabel(name: string) {
+  const normalized = name.toLowerCase();
+  if (fileTypeLabels[normalized]) {
+    return fileTypeLabels[normalized];
+  }
+
+  if (!normalized.includes("/")) {
+    return normalized;
+  }
+
+  const subtype = normalized.split("/")[1] ?? normalized;
+  return subtype.split("+")[0] ?? subtype;
+}
+
 export function DashboardCharts({ stats }: { stats: DashboardStats }) {
   return (
     <div className="grid gap-4 xl:grid-cols-2">
@@ -19,7 +51,10 @@ export function DashboardCharts({ stats }: { stats: DashboardStats }) {
                     <Cell key={entry.name} fill={colors[index % colors.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+                  formatter={(value, _name, item) => [value, formatFileTypeLabel(String(item.payload?.name ?? "unknown"))]}
+                  contentStyle={{ borderRadius: 8, borderColor: "#D0D5DD" }}
+                />
               </PieChart>
             </ResponsiveContainer>
           ) : (

@@ -12,6 +12,11 @@ import { normalizeTags } from "../utils/tags.js";
 
 const router = Router();
 
+const uploadSchema = z.object({
+  description: z.string().trim().min(1, "Description is required").max(4000),
+  tags: z.unknown()
+});
+
 const updateSchema = z.object({
   description: z.string().max(4000).optional(),
   tags: z.unknown().optional()
@@ -69,8 +74,22 @@ router.post(
       throw new ApiError(400, "A file field is required.");
     }
 
-    const description = typeof req.body.description === "string" ? req.body.description.trim() : "";
-    const tags = normalizeTags(req.body.tags);
+    let description = "";
+    let tags: string[] = [];
+
+    try {
+      const body = uploadSchema.parse(req.body);
+      description = body.description;
+      tags = normalizeTags(body.tags);
+    } catch (error) {
+      await fs.unlink(req.file.path).catch(() => undefined);
+      throw error;
+    }
+
+    if (tags.length === 0) {
+      await fs.unlink(req.file.path).catch(() => undefined);
+      throw new ApiError(400, "At least one tag is required.");
+    }
 
     const created = await prisma.$transaction(async (tx) => {
       const file = await tx.storedFile.create({
