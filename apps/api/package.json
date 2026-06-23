@@ -5,15 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "prisma generate && tsc -p tsconfig.json",
+    "build": "dotenv -e ../../.env -- prisma generate && tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "lint": "eslint \"src/**/*.ts\"",
-    "test": "prisma generate && vitest run",
-    "test:coverage": "prisma generate && vitest run --coverage",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:deploy": "prisma migrate deploy",
-    "prisma:studio": "prisma studio"
+    "test": "dotenv -e ../../.env -- prisma generate && vitest run",
+    "test:coverage": "dotenv -e ../../.env -- prisma generate && vitest run --coverage",
+    "prisma:generate": "dotenv -e ../../.env -- prisma generate",
+    "prisma:migrate": "dotenv -e ../../.env -- prisma migrate dev",
+    "prisma:deploy": "dotenv -e ../../.env -- prisma migrate deploy",
+    "prisma:studio": "dotenv -e ../../.env -- prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
@@ -45,6 +45,7 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^9.11.1",
     "eslint-config-prettier": "^9.1.0",
     "prisma": "^5.20.0",
