@@ -6,6 +6,8 @@ This project is easiest to deploy as:
 - API: Render web service
 - Database: Railway MySQL, Neon-compatible MySQL host, PlanetScale, or managed MySQL
 
+Note: Render Blueprints manage web services and Render Postgres, not MySQL, so the database must be hosted outside Render.
+
 ## Recommended Production Topology
 
 1. Deploy the frontend from `apps/web`
@@ -50,6 +52,7 @@ Settings:
 - Root directory: leave blank
 - Runtime: `Node`
 - Build command: `npm install && npm run build --workspace @memoria/api`
+- Pre-deploy command: `npm run prisma:deploy --workspace @memoria/api`
 - Start command: `npm run start --workspace @memoria/api`
 
 Required environment variables:
@@ -68,7 +71,7 @@ GOOGLE_CALLBACK_URL=https://your-api-domain.example.com/api/auth/oauth/google/ca
 
 ## Database Setup
 
-Use a managed MySQL database and apply migrations after deployment:
+Use a managed MySQL database and apply migrations after deployment. On Render, prefer the pre-deploy command above or a blueprint like [render.yaml](render.yaml).
 
 ```bash
 npm run prisma:deploy --workspace @memoria/api
