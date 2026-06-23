@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f6f7f9;
+  color: #18202f;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 10px 12px;
+  color: #18202f;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.input:focus {
+  border-color: #2d7ff9;
+  box-shadow: 0 0 0 3px rgba(45, 127, 249, 0.12);
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #344054;
+  margin-bottom: 6px;
+}

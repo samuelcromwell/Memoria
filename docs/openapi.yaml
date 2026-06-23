@@ -1,0 +1,155 @@
+openapi: 3.0.3
+info:
+  title: Memoria API
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: API status
+  /api/auth/oauth/google:
+    get:
+      summary: Start Google OAuth
+      responses:
+        "302":
+          description: Redirects to Google
+    post:
+      summary: Start Google OAuth via POST
+      responses:
+        "303":
+          description: Redirects to the GET OAuth route
+  /api/auth/setup-password:
+    post:
+      summary: Set password for authenticated OAuth user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetupPasswordRequest"
+      responses:
+        "200":
+          description: Updated user
+  /api/auth/login:
+    post:
+      summary: Local login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Authenticated user
+  /api/auth/logout:
+    post:
+      summary: Logout
+      responses:
+        "204":
+          description: Session destroyed
+  /api/auth/me:
+    get:
+      summary: Current user
+      responses:
+        "200":
+          description: Authenticated user
+  /api/files/upload:
+    post:
+      summary: Upload a file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                description:
+                  type: string
+                tags:
+                  type: string
+      responses:
+        "201":
+          description: Uploaded file metadata
+  /api/files:
+    get:
+      summary: List files
+      responses:
+        "200":
+          description: User files
+  /api/files/{id}:
+    get:
+      summary: Get file metadata
+      parameters:
+        - $ref: "#/components/parameters/FileId"
+      responses:
+        "200":
+          description: File metadata
+    put:
+      summary: Update file metadata
+      parameters:
+        - $ref: "#/components/parameters/FileId"
+      responses:
+        "200":
+          description: Updated file metadata
+    delete:
+      summary: Delete file
+      parameters:
+        - $ref: "#/components/parameters/FileId"
+      responses:
+        "204":
+          description: Deleted
+  /api/dashboard/stats:
+    get:
+      summary: Dashboard statistics
+      responses:
+        "200":
+          description: Stats
+  /api/dashboard/tags:
+    get:
+      summary: Tag usage
+      responses:
+        "200":
+          description: Tag counts
+  /api/dashboard/recent:
+    get:
+      summary: Recent uploads
+      responses:
+        "200":
+          description: Recent uploads
+components:
+  parameters:
+    FileId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    SetupPasswordRequest:
+      type: object
+      required: [password, confirmPassword]
+      properties:
+        password:
+          type: string
+          minLength: 8
+        confirmPassword:
+          type: string
+          minLength: 8

@@ -1,0 +1,52 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: memoria
+      MYSQL_USER: memoria
+      MYSQL_PASSWORD: memoria
+      MYSQL_ROOT_PASSWORD: memoria-root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -umemoria -pmemoria"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: mysql://memoria:memoria@mysql:3306/memoria
+      FRONTEND_URL: http://localhost:3000
+      UPLOAD_DIR: /app/uploads
+    ports:
+      - "4000:4000"
+    volumes:
+      - uploaded-files:/app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:4000
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  mysql-data:
+  uploaded-files:

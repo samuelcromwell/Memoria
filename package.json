@@ -1,0 +1,29 @@
+{
+  "name": "memoria-fullstack-test",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev --workspace @memoria/api\" \"npm run dev --workspace @memoria/web\"",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "format": "prettier --write .",
+    "prisma:generate": "npm run prisma:generate --workspace @memoria/api",
+    "prisma:migrate": "npm run prisma:migrate --workspace @memoria/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "prettier": "^3.3.3"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.15"
+    }
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}
