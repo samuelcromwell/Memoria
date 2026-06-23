@@ -47,7 +47,7 @@ Recommended platform: Render web service
 
 Settings:
 
-- Root directory: `apps/api`
+- Root directory: leave blank
 - Runtime: `Node`
 - Build command: `npm install && npm run build --workspace @memoria/api`
 - Start command: `npm run start --workspace @memoria/api`
@@ -56,7 +56,6 @@ Required environment variables:
 
 ```env
 NODE_ENV=production
-API_PORT=4000
 FRONTEND_URL=https://your-frontend-domain.example.com
 DATABASE_URL=mysql://user:password@host:3306/database
 SESSION_SECRET=generate-a-long-random-value

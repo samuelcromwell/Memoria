@@ -20,6 +20,7 @@ for (const envPath of [...new Set(envPaths)]) {
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  PORT: z.coerce.number().int().positive().optional(),
   API_PORT: z.coerce.number().int().positive().default(4000),
   FRONTEND_URL: z.string().url().default("http://localhost:3000"),
   DATABASE_URL: z.string().min(1).default("mysql://memoria:memoria@localhost:3306/memoria"),
@@ -34,7 +35,12 @@ const envSchema = z.object({
     .default("http://localhost:4000/api/auth/oauth/google/callback")
 });
 
-export const env = envSchema.parse(process.env);
+const parsedEnv = envSchema.parse(process.env);
+
+export const env = {
+  ...parsedEnv,
+  API_PORT: parsedEnv.PORT ?? parsedEnv.API_PORT
+};
 
 if (env.NODE_ENV === "production" && env.SESSION_SECRET === "dev-session-secret-change-me") {
   throw new Error("SESSION_SECRET must be set to a strong value in production.");
