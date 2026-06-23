@@ -7,6 +7,7 @@ This project is easiest to deploy as:
 - Database: Railway MySQL, Neon-compatible MySQL host, PlanetScale, or managed MySQL
 
 Note: Render Blueprints manage web services and Render Postgres, not MySQL, so the database must be hosted outside Render.
+If the API runs on Render and the database runs on Railway, `DATABASE_URL` must use Railway's TCP Proxy hostname and port. The `mysql.railway.internal` host only works from services inside Railway's private network.
 
 ## Recommended Production Topology
 
@@ -72,6 +73,8 @@ GOOGLE_CALLBACK_URL=https://your-api-domain.example.com/api/auth/oauth/google/ca
 ## Database Setup
 
 Use a managed MySQL database and apply migrations after deployment. On Render, prefer the pre-deploy command above or a blueprint like [render.yaml](render.yaml).
+
+When the database is on Railway, copy the public TCP Proxy endpoint from Railway's database service settings and build `DATABASE_URL` from that host and port.
 
 ```bash
 npm run prisma:deploy --workspace @memoria/api

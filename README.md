@@ -105,6 +105,7 @@ docs         SDLC, API, and presentation notes
 - Deploy `apps/web` to Vercel with `NEXT_PUBLIC_API_URL` pointing at the API.
 - Deploy `apps/api` to a Node-capable host such as Render, Railway, Fly.io, AWS ECS, or Heroku.
 - Provision MySQL and set `DATABASE_URL`.
+- If the API is on Render and the database is on Railway, `DATABASE_URL` must use Railway's TCP Proxy host and port, not `mysql.railway.internal`.
 - On Render, run Prisma migrations in a release step rather than during build; `render.yaml` includes that configuration.
 - Use persistent storage or replace local disk uploads with S3/GCS before production use.
 - Set secure production values for `SESSION_SECRET`, Google OAuth credentials, `FRONTEND_URL`, and `GOOGLE_CALLBACK_URL`.
