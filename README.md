@@ -46,15 +46,23 @@ http://localhost:4000/api/auth/oauth/google/callback
 
 4. Start MySQL:
 
+If Docker is available:
+
 ```bash
 docker compose up -d mysql
+```
+
+If Docker is not available and you are using a local MySQL service:
+
+```bash
+sudo service mysql start
 ```
 
 5. Create the database tables:
 
 ```bash
 npm run prisma:generate
-npm run prisma:migrate
+npm run prisma:deploy --workspace @memoria/api
 ```
 
 6. Start both apps:
@@ -100,4 +108,10 @@ docs         SDLC, API, and presentation notes
 - Use persistent storage or replace local disk uploads with S3/GCS before production use.
 - Set secure production values for `SESSION_SECRET`, Google OAuth credentials, `FRONTEND_URL`, and `GOOGLE_CALLBACK_URL`.
 
-See [docs/SDLC.md](docs/SDLC.md) and [docs/API.md](docs/API.md) for the required submission documentation.
+See these documents for submission:
+
+- [docs/SDLC.md](docs/SDLC.md)
+- [docs/API.md](docs/API.md)
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+- [docs/SUBMISSION.md](docs/SUBMISSION.md)
+- [docs/PRESENTATION-SLIDES.md](docs/PRESENTATION-SLIDES.md)
