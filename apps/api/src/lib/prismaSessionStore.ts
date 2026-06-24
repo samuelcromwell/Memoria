@@ -37,17 +37,18 @@ export class PrismaSessionStore extends session.Store {
 
   set(sid: string, sessionData: SessionData, callback?: Callback): void {
     const expiresAt = this.getExpiresAt(sessionData);
+    const data = toJsonSessionData(sessionData);
 
     void this.prisma.session
       .upsert({
         where: { sid },
         create: {
           sid,
-          data: sessionData as unknown as Prisma.InputJsonValue,
+          data,
           expiresAt
         },
         update: {
-          data: sessionData as unknown as Prisma.InputJsonValue,
+          data,
           expiresAt
         }
       })
@@ -86,4 +87,8 @@ export class PrismaSessionStore extends session.Store {
 
     return new Date(Date.now() + this.ttlMs);
   }
+}
+
+function toJsonSessionData(sessionData: SessionData): Prisma.InputJsonValue {
+  return JSON.parse(JSON.stringify(sessionData)) as Prisma.InputJsonValue;
 }
