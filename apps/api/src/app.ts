@@ -69,10 +69,12 @@ export function createApp() {
   app.get("/health/db", async (_req, res) => {
     try {
       await prisma.$queryRaw`SELECT 1`;
-      res.json({ status: "ok", database: "connected" });
+      await prisma.user.count();
+      await prisma.session.count();
+      res.json({ status: "ok", database: "connected", schema: "ready" });
     } catch (error) {
       console.error("Database health check failed", error);
-      res.status(503).json({ status: "error", database: "unavailable" });
+      res.status(503).json({ status: "error", database: "unavailable", schema: "not-ready" });
     }
   });
 
