@@ -1,10 +1,10 @@
 const cloudMysqlHosts = [
-  ".railway.app",
-  ".rlwy.net",
   ".planetscale.com",
   ".aivencloud.com",
   ".clever-cloud.com"
 ];
+
+const railwayMysqlHosts = [".railway.app", ".rlwy.net"];
 
 function appendQueryParam(url: string, param: string): string {
   return url.includes("?") ? `${url}&${param}` : `${url}?${param}`;
@@ -20,7 +20,18 @@ function requiresExternalSsl(hostname: string): boolean {
     return false;
   }
 
-  return cloudMysqlHosts.some((suffix) => hostname.endsWith(suffix) || hostname.includes(suffix));
+  return (
+    railwayMysqlHosts.some((suffix) => hostname.endsWith(suffix) || hostname.includes(suffix)) ||
+    cloudMysqlHosts.some((suffix) => hostname.endsWith(suffix) || hostname.includes(suffix))
+  );
+}
+
+function getSslAcceptMode(hostname: string): "strict" | "accept_invalid_certs" {
+  if (railwayMysqlHosts.some((suffix) => hostname.endsWith(suffix) || hostname.includes(suffix))) {
+    return "accept_invalid_certs";
+  }
+
+  return "strict";
 }
 
 export function normalizeDatabaseUrl(databaseUrl: string, nodeEnv: string): string {
@@ -45,7 +56,7 @@ export function normalizeDatabaseUrl(databaseUrl: string, nodeEnv: string): stri
   }
 
   if (nodeEnv === "production" && requiresExternalSsl(hostname)) {
-    const normalized = appendQueryParam(databaseUrl, "sslaccept=strict");
+    const normalized = appendQueryParam(databaseUrl, `sslaccept=${getSslAcceptMode(hostname)}`);
     console.info(`Applied MySQL SSL settings for ${hostname}`);
     return normalized;
   }

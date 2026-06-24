@@ -2,8 +2,18 @@ import { describe, expect, it } from "vitest";
 import { normalizeDatabaseUrl } from "../config/databaseUrl.js";
 
 describe("normalizeDatabaseUrl", () => {
-  it("appends SSL for Railway public hosts in production", () => {
+  it("accepts Railway proxy certificates in production", () => {
     const url = "mysql://user:pass@containers-us-west-123.railway.app:6543/memoria";
+    expect(normalizeDatabaseUrl(url, "production")).toBe(`${url}?sslaccept=accept_invalid_certs`);
+  });
+
+  it("accepts Railway rlwy.net proxy certificates in production", () => {
+    const url = "mysql://user:pass@thomas.proxy.rlwy.net:12345/memoria";
+    expect(normalizeDatabaseUrl(url, "production")).toBe(`${url}?sslaccept=accept_invalid_certs`);
+  });
+
+  it("uses strict SSL for other managed MySQL hosts in production", () => {
+    const url = "mysql://user:pass@mysql.example.aivencloud.com:3306/memoria";
     expect(normalizeDatabaseUrl(url, "production")).toBe(`${url}?sslaccept=strict`);
   });
 
