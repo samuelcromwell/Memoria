@@ -66,8 +66,21 @@ function LoginContent() {
   }, [initialized, router, user]);
 
   useEffect(() => {
-    if (searchParams.get("auth") === "google-not-configured") {
+    const auth = searchParams.get("auth");
+    const reason = searchParams.get("reason");
+
+    if (auth === "google-not-configured") {
       setError("Google OAuth is not configured on the API server.");
+      return;
+    }
+
+    if (auth === "error") {
+      if (reason === "session-failed") {
+        setError("Google sign-in succeeded, but the server could not create a session. Check that the database is reachable and migrations are applied.");
+        return;
+      }
+
+      setError("Google sign-in failed. Verify the API database connection and OAuth credentials, then try again.");
     }
   }, [searchParams]);
 

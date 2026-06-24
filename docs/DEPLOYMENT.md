@@ -74,7 +74,27 @@ GOOGLE_CALLBACK_URL=https://your-api-domain.example.com/api/auth/oauth/google/ca
 
 Use a managed MySQL database and apply migrations after deployment. On Render, prefer the pre-deploy command above or a blueprint like [render.yaml](render.yaml).
 
-When the database is on Railway, copy the public TCP Proxy endpoint from Railway's database service settings and build `DATABASE_URL` from that host and port.
+When the database is on Railway, copy the public TCP Proxy endpoint from Railway's database service settings and build `DATABASE_URL` from that host and port. Do not use `mysql.railway.internal` from Render or other external hosts.
+
+For Railway and other managed MySQL hosts, external connections usually require SSL. The API automatically appends `sslaccept=strict` in production when it detects common cloud MySQL hostnames. You can also set it manually:
+
+```env
+DATABASE_URL=mysql://user:password@host:port/database?sslaccept=strict
+```
+
+After deployment, verify database connectivity:
+
+```text
+GET https://your-api-domain.example.com/health/db
+```
+
+Expected response:
+
+```json
+{ "status": "ok", "database": "connected" }
+```
+
+If this endpoint returns `503`, fix `DATABASE_URL` before testing OAuth or login.
 
 ```bash
 npm run prisma:deploy --workspace @memoria/api

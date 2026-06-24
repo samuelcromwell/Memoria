@@ -66,6 +66,16 @@ export function createApp() {
     res.json({ status: "ok" });
   });
 
+  app.get("/health/db", async (_req, res) => {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      res.json({ status: "ok", database: "connected" });
+    } catch (error) {
+      console.error("Database health check failed", error);
+      res.status(503).json({ status: "error", database: "unavailable" });
+    }
+  });
+
   app.use("/api/auth", authRouter);
   app.use("/api/files", filesRouter);
   app.use("/api/dashboard", dashboardRouter);

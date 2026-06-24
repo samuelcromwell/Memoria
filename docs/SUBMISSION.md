@@ -33,8 +33,8 @@ After creating the repo:
 
 Before submission, fill these in:
 
-- Frontend URL: `____________________________`
-- API URL: `____________________________`
+- Frontend URL: `https://memoria-docs.netlify.app`
+- API URL: `https://memoria-j28d.onrender.com`
 - Demo test user email: `____________________________`
 
 If you do not want to share personal Google accounts with reviewers, create a dedicated reviewer Google account for the demo.

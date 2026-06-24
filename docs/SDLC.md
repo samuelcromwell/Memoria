@@ -91,6 +91,7 @@ Required production environment variables:
 - Sessions should not use the default in-memory store. A Prisma-backed session store persists sessions in MySQL.
 - File ownership must be enforced on every file endpoint. Each read, update, download, and delete query includes `userId`.
 - Dashboard aggregates need user scoping. Tag counts are derived only from the authenticated user's file tag links.
+- External MySQL from Render requires the public database host and SSL. The API appends `sslaccept=strict` automatically for common cloud MySQL hostnames and exposes `GET /health/db` for deployment verification.
 
 ## Future Improvements
 

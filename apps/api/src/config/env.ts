@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
 import { z } from "zod";
+import { normalizeDatabaseUrl } from "./databaseUrl.js";
 
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 const envPaths = [
@@ -36,9 +37,13 @@ const envSchema = z.object({
 });
 
 const parsedEnv = envSchema.parse(process.env);
+const databaseUrl = normalizeDatabaseUrl(parsedEnv.DATABASE_URL, parsedEnv.NODE_ENV);
+
+process.env.DATABASE_URL = databaseUrl;
 
 export const env = {
   ...parsedEnv,
+  DATABASE_URL: databaseUrl,
   API_PORT: parsedEnv.PORT ?? parsedEnv.API_PORT
 };
 

@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { Router } from "express";
+import { Router, type Response } from "express";
 import passport from "passport";
 import { z } from "zod";
 import { env, googleOAuthEnabled } from "../config/env.js";
@@ -46,6 +46,11 @@ router.post("/oauth/google", (_req, res) => {
   res.redirect(303, "/api/auth/oauth/google");
 });
 
+function redirectAuthFailure(res: Response, reason: string): void {
+  const params = new URLSearchParams({ auth: "error", reason });
+  res.redirect(`${env.FRONTEND_URL}/?${params.toString()}`);
+}
+
 router.get("/oauth/google/callback", (req, res, next) => {
   if (!googleOAuthEnabled) {
     res.redirect(`${env.FRONTEND_URL}/?auth=google-not-configured`);
@@ -53,14 +58,21 @@ router.get("/oauth/google/callback", (req, res, next) => {
   }
 
   passport.authenticate("google", (error: unknown, user: SafeUser | false) => {
-    if (error || !user) {
-      next(error ?? new ApiError(401, "Google authentication failed"));
+    if (error) {
+      console.error("Google OAuth callback failed", error);
+      redirectAuthFailure(res, "google-auth-failed");
+      return;
+    }
+
+    if (!user) {
+      redirectAuthFailure(res, "google-auth-failed");
       return;
     }
 
     req.logIn(user, (loginError) => {
       if (loginError) {
-        next(loginError);
+        console.error("Failed to persist OAuth session", loginError);
+        redirectAuthFailure(res, "session-failed");
         return;
       }
 
